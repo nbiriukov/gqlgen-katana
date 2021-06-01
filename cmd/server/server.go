@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
+    "net/http"
 	"os"
+	"github.com/go-chi/chi"
+	"github.com/rs/cors"
 
 	auHandler "github.com/raganmartinez-hf/gqlgen-katana/handler/au"
 	usHandler "github.com/raganmartinez-hf/gqlgen-katana/handler/us"
@@ -17,12 +19,19 @@ func main() {
 		port = defaultPort
 	}
 
+	router := chi.NewRouter()
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
+
 	// AU endpoints //
-	auHandler.InitAUHandler()
+	auHandler.InitAUHandler(router)
 
 	// US endpoints
-	usHandler.InitUSHandler()
+	usHandler.InitUSHandler(router)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
