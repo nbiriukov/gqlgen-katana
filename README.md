@@ -10,7 +10,7 @@ Start server:
 $ make run_server
 ```
 
-Visit either `http://localhost:8080/au` or `http://localhost:8080/us` to use the GraphQL playground client, or write queries using Postman/Insomnia etc (gql query endpoints are `http://localhost:8080/au/query` or `http://localhost:8080/us/query` and expect POST requests)
+Visit either `http://localhost:8080/au` or `http://localhost:8080/us` to use the GraphQL playground client, or write queries using Postman/Insomnia etc (gql query endpoints are `http://localhost:8080/query/au` or `http://localhost:8080/query/us` and expect POST requests)
 
 ## Example queries
 
