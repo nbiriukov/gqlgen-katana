@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Id",
+      "id": true,
+      "cssClass": "font-weight-bold"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "state": {
+      "type": "string",
+      "description": "State/Province",
+      "sortable": false,
+      "cssClass": "text--disabled"
+    },
+    "open": {
+      "type": "boolean",
+      "description": "Is open",
+      "sortable": false
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # US example
 
+scalar Any
+
 type Hub {
   id: ID!
   country: String!
@@ -10,6 +12,7 @@ type Hub {
 
 type Query {
   hubs: [Hub!]!
+  schema(id: String): Any!
 }
 
 input NewHub {

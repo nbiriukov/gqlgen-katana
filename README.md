@@ -15,6 +15,7 @@ Visit either `http://localhost:8080/au` or `http://localhost:8080/us` to use the
 ## Example queries
 
 Get all AU hubs
+
 ```
 query getHubs {
   hubs {
@@ -29,6 +30,7 @@ query getHubs {
 ```
 
 Create new AU hub
+
 ```
 mutation createHub {
   createHub(
@@ -51,6 +53,7 @@ mutation createHub {
 ```
 
 Get all US hubs (note that in this example US hubs do not use the priority field as a test)
+
 ```
 query getHubs {
   hubs {
@@ -60,10 +63,12 @@ query getHubs {
     address
     state
   }
+  schema(id: "hub")
 }
 ```
 
 Create new US hub
+
 ```
 mutation createHub {
   createHub(
