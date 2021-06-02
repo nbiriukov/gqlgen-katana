@@ -1,7 +1,7 @@
 {
   "type": "object",
   "properties": {
-    "id": {
+    "name": {
       "type": "string",
       "description": "Id",
       "id": true,
@@ -11,19 +11,16 @@
       "type": "string",
       "description": "Country"
     },
-    "name": {
-      "type": "string",
-      "description": "Name"
-    },
-    "address": {
-      "type": "string",
-      "description": "Address"
-    },
     "state": {
       "type": "string",
       "description": "State/Province",
       "sortable": false,
       "cssClass": "text--disabled"
+    },
+    "open": {
+      "type": "boolean",
+      "description": "Is open",
+      "sortable": false
     }
   }
 }

@@ -13,6 +13,7 @@ type Hub {
 type Query {
   hubs: [Hub!]!
   schema(id: String): Any!
+  menu: Any!
 }
 
 input NewHub {

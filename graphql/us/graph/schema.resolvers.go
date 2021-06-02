@@ -5,12 +5,11 @@ package graph
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/generated"
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/model"
+	"github.com/raganmartinez-hf/gqlgen-katana/utils/json"
 )
 
 func (r *mutationResolver) CreateHub(ctx context.Context, input model.NewHub) (*model.Hub, error) {
@@ -31,21 +30,11 @@ func (r *queryResolver) Hubs(ctx context.Context) ([]*model.Hub, error) {
 
 func (r *queryResolver) Schema(ctx context.Context, id *string) (interface{}, error) {
 	path := fmt.Sprintf("graphql/us/schemas/%s.json", *id)
-	byteArray, err := ioutil.ReadFile(path)
+	return json.ImportFromFile(path)
+}
 
-	if err != nil {
-		return nil, err
-	}
-
-	var schema map[string]interface{}
-
-	err = json.Unmarshal(byteArray, &schema)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return schema, nil
+func (r *queryResolver) Menu(ctx context.Context) (interface{}, error) {
+	return json.ImportFromFile("graphql/us/schemas/menu.json")
 }
 
 // Mutation returns generated.MutationResolver implementation.

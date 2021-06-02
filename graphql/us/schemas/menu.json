@@ -1,0 +1,28 @@
+[
+  {
+    "route": "/dc",
+    "title": "DC"
+  },
+  {
+    "route": "/hub",
+    "title": "HUB"
+  },
+  {
+    "title": "Static",
+    "items": [
+      {
+        "route": "/shift",
+        "title": "Shift"
+      },
+      {
+        "route": "/partner",
+        "title": "Partner"
+      }
+    ]
+  },
+  {
+    "route": "/settings",
+    "title": "Settings",
+    "single": true
+  }
+]

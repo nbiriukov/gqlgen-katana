@@ -57,6 +57,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Hubs   func(childComplexity int) int
+		Menu   func(childComplexity int) int
 		Schema func(childComplexity int, id *string) int
 	}
 }
@@ -67,6 +68,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Hubs(ctx context.Context) ([]*model.Hub, error)
 	Schema(ctx context.Context, id *string) (interface{}, error)
+	Menu(ctx context.Context) (interface{}, error)
 }
 
 type executableSchema struct {
@@ -137,6 +139,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Hubs(childComplexity), true
+
+	case "Query.menu":
+		if e.complexity.Query.Menu == nil {
+			break
+		}
+
+		return e.complexity.Query.Menu(childComplexity), true
 
 	case "Query.schema":
 		if e.complexity.Query.Schema == nil {
@@ -229,6 +238,7 @@ type Hub {
 type Query {
   hubs: [Hub!]!
   schema(id: String): Any!
+  menu: Any!
 }
 
 input NewHub {
@@ -610,6 +620,41 @@ func (ec *executionContext) _Query_schema(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Schema(rctx, args["id"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(interface{})
+	fc.Result = res
+	return ec.marshalNAny2interface(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_menu(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Menu(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1952,6 +1997,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_schema(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "menu":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_menu(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
