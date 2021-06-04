@@ -1,0 +1,115 @@
+{
+  "menu": [
+    {
+      "model": "dc",
+      "title": "DC"
+    },
+    {
+      "model": "hub",
+      "title": "HUB"
+    },
+    {
+      "title": "Static",
+      "items": [
+        {
+          "model": "shift",
+          "title": "Shift"
+        },
+        {
+          "model": "partner",
+          "title": "Partner"
+        }
+      ]
+    },
+    {
+      "model": "settings",
+      "title": "Settings",
+      "single": true
+    }
+  ],
+  "dc": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Id",
+        "id": true,
+        "cssClass": "font-weight-bold"
+      },
+      "country": {
+        "type": "string",
+        "description": "Country"
+      },
+      "state": {
+        "type": "string",
+        "description": "State/Province",
+        "sortable": false,
+        "cssClass": "text--disabled"
+      },
+      "open": {
+        "type": "boolean",
+        "description": "Is open",
+        "sortable": false
+      }
+    }
+  },
+  "hub": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Id",
+        "id": true,
+        "cssClass": "font-weight-bold"
+      },
+      "country": {
+        "type": "string",
+        "description": "Country"
+      },
+      "name": {
+        "type": "string",
+        "description": "Name"
+      },
+      "address": {
+        "type": "string",
+        "description": "Address"
+      },
+      "state": {
+        "type": "string",
+        "description": "State/Province",
+        "sortable": false,
+        "cssClass": "text--disabled"
+      }
+    }
+  },
+  "partenr": {
+    "type": "object",
+    "properties": {}
+  },
+  "settings": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Site name"
+      },
+      "port-number": {
+        "type": "number",
+        "description": "Port number"
+      },
+      "env": {
+        "type": "string",
+        "description": "Environment",
+        "enum": ["production", "develop", "stage"]
+      },
+      "enabled": {
+        "type": "boolean",
+        "description": "Service enabled"
+      }
+    }
+  },
+  "shift": {
+    "type": "object",
+    "properties": {}
+  }
+}

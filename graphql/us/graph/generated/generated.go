@@ -56,9 +56,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Hubs   func(childComplexity int) int
-		Menu   func(childComplexity int) int
-		Schema func(childComplexity int, id *string) int
+		Hub    func(childComplexity int, id *int) int
+		Schema func(childComplexity int) int
 	}
 }
 
@@ -66,9 +65,8 @@ type MutationResolver interface {
 	CreateHub(ctx context.Context, input model.NewHub) (*model.Hub, error)
 }
 type QueryResolver interface {
-	Hubs(ctx context.Context) ([]*model.Hub, error)
-	Schema(ctx context.Context, id *string) (interface{}, error)
-	Menu(ctx context.Context) (interface{}, error)
+	Hub(ctx context.Context, id *int) ([]*model.Hub, error)
+	Schema(ctx context.Context) (interface{}, error)
 }
 
 type executableSchema struct {
@@ -133,31 +131,24 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateHub(childComplexity, args["input"].(model.NewHub)), true
 
-	case "Query.hubs":
-		if e.complexity.Query.Hubs == nil {
+	case "Query.hub":
+		if e.complexity.Query.Hub == nil {
 			break
 		}
 
-		return e.complexity.Query.Hubs(childComplexity), true
-
-	case "Query.menu":
-		if e.complexity.Query.Menu == nil {
-			break
+		args, err := ec.field_Query_hub_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
 		}
 
-		return e.complexity.Query.Menu(childComplexity), true
+		return e.complexity.Query.Hub(childComplexity, args["id"].(*int)), true
 
 	case "Query.schema":
 		if e.complexity.Query.Schema == nil {
 			break
 		}
 
-		args, err := ec.field_Query_schema_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Schema(childComplexity, args["id"].(*string)), true
+		return e.complexity.Query.Schema(childComplexity), true
 
 	}
 	return 0, false
@@ -228,7 +219,7 @@ var sources = []*ast.Source{
 scalar Any
 
 type Hub {
-  id: ID!
+  id: Int!
   country: String!
   name: String!
   address: String!
@@ -236,9 +227,8 @@ type Hub {
 }
 
 type Query {
-  hubs: [Hub!]!
-  schema(id: String): Any!
-  menu: Any!
+  hub(id: Int): [Hub!]!
+  schema: Any!
 }
 
 input NewHub {
@@ -289,13 +279,13 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_schema_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_hub_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 *int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -372,9 +362,9 @@ func (ec *executionContext) _Hub_id(ctx context.Context, field graphql.Collected
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Hub_country(ctx context.Context, field graphql.CollectedField, obj *model.Hub) (ret graphql.Marshaler) {
@@ -559,7 +549,7 @@ func (ec *executionContext) _Mutation_createHub(ctx context.Context, field graph
 	return ec.marshalNHub2ᚖgithubᚗcomᚋraganmartinezᚑhfᚋgqlgenᚑkatanaᚋgraphqlᚋusᚋgraphᚋmodelᚐHub(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_hubs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_hub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -575,9 +565,16 @@ func (ec *executionContext) _Query_hubs(ctx context.Context, field graphql.Colle
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_hub_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Hubs(rctx)
+		return ec.resolvers.Query().Hub(rctx, args["id"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -610,51 +607,9 @@ func (ec *executionContext) _Query_schema(ctx context.Context, field graphql.Col
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_schema_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Schema(rctx, args["id"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(interface{})
-	fc.Result = res
-	return ec.marshalNAny2interface(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_menu(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Menu(rctx)
+		return ec.resolvers.Query().Schema(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1974,7 +1929,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "hubs":
+		case "hub":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -1982,7 +1937,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_hubs(ctx, field)
+				res = ec._Query_hub(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -1997,20 +1952,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_schema(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "menu":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_menu(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2363,13 +2304,13 @@ func (ec *executionContext) marshalNHub2ᚖgithubᚗcomᚋraganmartinezᚑhfᚋg
 	return ec._Hub(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2649,6 +2590,21 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

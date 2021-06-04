@@ -2,6 +2,15 @@
 
 This repo is a PoC for using an SDL-first GraphQL server using the gqlgen library for Go.
 
+## How to code
+
+Do not forget to generate stuff after schema.graphqls or schema.resolvers.go changes! Go to country folder and run script in terminal:
+
+```
+$ cd graphql/us
+$ go run github.com/99designs/gqlgen generate
+```
+
 ## How to test
 
 Start server:
@@ -13,6 +22,8 @@ $ make run_server
 Visit either `http://localhost:8080/au` or `http://localhost:8080/us` to use the GraphQL playground client, or write queries using Postman/Insomnia etc (gql query endpoints are `http://localhost:8080/query/au` or `http://localhost:8080/query/us` and expect POST requests)
 
 ## Example queries
+
+### Australia
 
 Get all AU hubs
 
@@ -52,18 +63,33 @@ mutation createHub {
 }
 ```
 
+### United States
+
 Get all US hubs (note that in this example US hubs do not use the priority field as a test)
 
 ```
 query getHubs {
-  hubs {
+  hub {
     id
     country
     name
     address
     state
   }
-  schema(id: "hub")
+}
+```
+
+Get single US hub
+
+```
+query getHub  {
+  hub(id: 1) {
+    id
+    country
+    name
+    address
+    state
+  }
 }
 ```
 
@@ -85,6 +111,14 @@ mutation createHub {
     address
     state
   }
+}
+```
+
+Get schema
+
+```
+query getSchema {
+  schema
 }
 ```
 

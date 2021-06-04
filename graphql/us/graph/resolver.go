@@ -7,5 +7,6 @@ import "github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/model"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	hubs []*model.Hub
+	hubs []*model.Hub;
+	hubAI int;
 }

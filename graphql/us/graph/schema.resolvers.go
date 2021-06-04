@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/generated"
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/model"
@@ -13,8 +12,10 @@ import (
 )
 
 func (r *mutationResolver) CreateHub(ctx context.Context, input model.NewHub) (*model.Hub, error) {
+	r.hubAI++
+
 	hub := &model.Hub{
-		ID:      "1",
+		ID:      r.hubAI,
 		Country: input.Country,
 		Name:    input.Name,
 		Address: input.Address,
@@ -24,17 +25,23 @@ func (r *mutationResolver) CreateHub(ctx context.Context, input model.NewHub) (*
 	return hub, nil
 }
 
-func (r *queryResolver) Hubs(ctx context.Context) ([]*model.Hub, error) {
-	return r.hubs, nil
+func (r *queryResolver) Hub(ctx context.Context, id *int) ([]*model.Hub, error) {
+	if id == nil {
+		return r.hubs, nil
+	}
+
+	filtered := make([]*model.Hub, 0)
+	for _, hub := range r.hubs {
+		if *(&hub.ID) == *id {
+			filtered = append(filtered, hub)
+		}
+	}
+
+	return filtered, nil
 }
 
-func (r *queryResolver) Schema(ctx context.Context, id *string) (interface{}, error) {
-	path := fmt.Sprintf("graphql/us/schemas/%s.json", *id)
-	return json.ImportFromFile(path)
-}
-
-func (r *queryResolver) Menu(ctx context.Context) (interface{}, error) {
-	return json.ImportFromFile("graphql/us/schemas/menu.json")
+func (r *queryResolver) Schema(ctx context.Context) (interface{}, error) {
+	return json.ImportFromFile("graphql/us/schema.json")
 }
 
 // Mutation returns generated.MutationResolver implementation.

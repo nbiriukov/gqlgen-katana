@@ -3,7 +3,7 @@
 package model
 
 type Hub struct {
-	ID      string `json:"id"`
+	ID      int    `json:"id"`
 	Country string `json:"country"`
 	Name    string `json:"name"`
 	Address string `json:"address"`

@@ -3,7 +3,7 @@
 scalar Any
 
 type Hub {
-  id: ID!
+  id: Int!
   country: String!
   name: String!
   address: String!
@@ -11,9 +11,8 @@ type Hub {
 }
 
 type Query {
-  hubs: [Hub!]!
-  schema(id: String): Any!
-  menu: Any!
+  hub(id: Int): [Hub!]!
+  schema: Any!
 }
 
 input NewHub {
