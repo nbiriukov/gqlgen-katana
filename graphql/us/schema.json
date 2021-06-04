@@ -28,88 +28,92 @@
     }
   ],
   "dc": {
-    "type": "object",
-    "properties": {
-      "name": {
+    "id": "name",
+    "fields": [
+      {
+        "name": "name",
         "type": "string",
         "description": "Id",
-        "id": true,
         "cssClass": "font-weight-bold"
       },
-      "country": {
-        "type": "string",
-        "description": "Country"
-      },
-      "state": {
+      { "name": "country", "type": "string", "description": "Country" },
+      {
+        "name": "state",
         "type": "string",
         "description": "State/Province",
         "sortable": false,
         "cssClass": "text--disabled"
       },
-      "open": {
+      {
+        "name": "open",
         "type": "boolean",
         "description": "Is open",
         "sortable": false
       }
-    }
+    ]
   },
   "hub": {
-    "type": "object",
-    "properties": {
-      "id": {
+    "fields": [
+      {
+        "name": "id",
         "type": "string",
         "description": "Id",
-        "id": true,
         "cssClass": "font-weight-bold"
       },
-      "country": {
+      {
+        "name": "country",
         "type": "string",
         "description": "Country"
       },
-      "name": {
+      {
+        "name": "name",
         "type": "string",
         "description": "Name"
       },
-      "address": {
+      {
+        "name": "address",
         "type": "string",
         "description": "Address"
       },
-      "state": {
+      {
+        "name": "state",
         "type": "string",
         "description": "State/Province",
         "sortable": false,
         "cssClass": "text--disabled"
       }
-    }
+    ]
   },
-  "partenr": {
-    "type": "object",
-    "properties": {}
+  "partner": {
+    "fields": []
   },
   "settings": {
-    "type": "object",
-    "properties": {
-      "name": {
+    "fields": [
+      {
+        "name": "name",
         "type": "string",
         "description": "Site name"
       },
-      "port-number": {
+      {
+        "name": "port-number",
         "type": "number",
         "description": "Port number"
       },
-      "env": {
+      {
+        "name": "env",
         "type": "string",
         "description": "Environment",
         "enum": ["production", "develop", "stage"]
       },
-      "enabled": {
+      {
+        "name": "enabled",
         "type": "boolean",
         "description": "Service enabled"
       }
-    }
+    ],
+    "single": true
   },
   "shift": {
-    "type": "object",
-    "properties": {}
+    "fields": []
   }
 }
