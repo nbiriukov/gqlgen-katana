@@ -3,16 +3,16 @@
 package model
 
 type Hub struct {
-	ID      int    `json:"id"`
-	Country string `json:"country"`
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	State   string `json:"state"`
+	ID      int     `json:"id"`
+	Country string  `json:"country"`
+	Name    string  `json:"name"`
+	Address string  `json:"address"`
+	State   *string `json:"state"`
 }
 
 type NewHub struct {
-	Country string `json:"country"`
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	State   string `json:"state"`
+	Country string  `json:"country"`
+	Name    string  `json:"name"`
+	Address string  `json:"address"`
+	State   *string `json:"state"`
 }

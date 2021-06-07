@@ -7,7 +7,7 @@ type Hub {
   country: String!
   name: String!
   address: String!
-  state: String!
+  state: String
 }
 
 type Query {
@@ -19,7 +19,7 @@ input NewHub {
   country: String!
   name: String!
   address: String!
-  state: String!
+  state: String
 }
 
 type Mutation {

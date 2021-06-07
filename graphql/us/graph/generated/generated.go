@@ -251,7 +251,7 @@ type Hub {
   country: String!
   name: String!
   address: String!
-  state: String!
+  state: String
 }
 
 type Query {
@@ -263,7 +263,7 @@ input NewHub {
   country: String!
   name: String!
   address: String!
-  state: String!
+  state: String
 }
 
 type Mutation {
@@ -566,14 +566,11 @@ func (ec *executionContext) _Hub_state(ctx context.Context, field graphql.Collec
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createHub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1965,7 +1962,7 @@ func (ec *executionContext) unmarshalInputNewHub(ctx context.Context, obj interf
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
-			it.State, err = ec.unmarshalNString2string(ctx, v)
+			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2016,9 +2013,6 @@ func (ec *executionContext) _Hub(ctx context.Context, sel ast.SelectionSet, obj 
 			}
 		case "state":
 			out.Values[i] = ec._Hub_state(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

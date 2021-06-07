@@ -58,22 +58,26 @@
         "name": "id",
         "type": "string",
         "description": "Id",
+        "disabled": true,
         "cssClass": "font-weight-bold"
       },
       {
         "name": "country",
         "type": "string",
-        "description": "Country"
+        "description": "Country",
+        "required": true
       },
       {
         "name": "name",
         "type": "string",
-        "description": "Name"
+        "description": "Name",
+        "required": true
       },
       {
         "name": "address",
         "type": "string",
-        "description": "Address"
+        "description": "Address",
+        "required": true
       },
       {
         "name": "state",
