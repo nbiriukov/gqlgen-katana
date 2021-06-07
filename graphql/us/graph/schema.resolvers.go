@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/generated"
 	"github.com/raganmartinez-hf/gqlgen-katana/graphql/us/graph/model"
@@ -23,6 +24,33 @@ func (r *mutationResolver) CreateHub(ctx context.Context, input model.NewHub) (*
 	}
 	r.hubs = append(r.hubs, hub)
 	return hub, nil
+}
+
+func (r *mutationResolver) UpdateHub(ctx context.Context, id int, input model.NewHub) (*model.Hub, error) {
+	for _, hub := range r.hubs {
+		if *(&hub.ID) == id {
+			hub.Country = input.Country
+			hub.Name = input.Name
+			hub.Address = input.Address
+			hub.State = input.State
+		}
+
+		return hub, nil
+	}
+
+	return nil, fmt.Errorf("not found")
+}
+
+func (r *mutationResolver) DeleteHub(ctx context.Context, id int) (*bool, error) {
+	filtered := make([]*model.Hub, 0)
+	for _, hub := range r.hubs {
+		if *(&hub.ID) != id {
+			filtered = append(filtered, hub)
+		}
+	}
+	r.hubs = filtered
+
+	return nil, nil
 }
 
 func (r *queryResolver) Hub(ctx context.Context, id *int) ([]*model.Hub, error) {

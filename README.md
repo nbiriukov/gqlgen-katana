@@ -114,6 +114,38 @@ mutation createHub {
 }
 ```
 
+Update hub by id
+
+```
+mutation updateHub {
+  updateHub(
+    id: 1
+    input: {
+      country: "gb"
+      name: "Manchester"
+      address: "123 Kings road"
+      state: "MN"
+    }
+  ) {
+    id
+    country
+    name
+    address
+    state
+  }
+}
+```
+
+Delete hub by id
+
+```
+mutation deleteHub {
+  deleteHub(
+    id: 2
+  )
+}
+```
+
 Get schema
 
 ```

@@ -53,6 +53,8 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateHub func(childComplexity int, input model.NewHub) int
+		DeleteHub func(childComplexity int, id int) int
+		UpdateHub func(childComplexity int, id int, input model.NewHub) int
 	}
 
 	Query struct {
@@ -63,6 +65,8 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateHub(ctx context.Context, input model.NewHub) (*model.Hub, error)
+	UpdateHub(ctx context.Context, id int, input model.NewHub) (*model.Hub, error)
+	DeleteHub(ctx context.Context, id int) (*bool, error)
 }
 type QueryResolver interface {
 	Hub(ctx context.Context, id *int) ([]*model.Hub, error)
@@ -130,6 +134,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateHub(childComplexity, args["input"].(model.NewHub)), true
+
+	case "Mutation.deleteHub":
+		if e.complexity.Mutation.DeleteHub == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteHub_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteHub(childComplexity, args["id"].(int)), true
+
+	case "Mutation.updateHub":
+		if e.complexity.Mutation.UpdateHub == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateHub_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateHub(childComplexity, args["id"].(int), args["input"].(model.NewHub)), true
 
 	case "Query.hub":
 		if e.complexity.Query.Hub == nil {
@@ -240,6 +268,8 @@ input NewHub {
 
 type Mutation {
   createHub(input: NewHub!): Hub!
+  updateHub(id: Int!, input: NewHub!): Hub
+  deleteHub(id: Int!): Boolean
 }
 `, BuiltIn: false},
 }
@@ -261,6 +291,45 @@ func (ec *executionContext) field_Mutation_createHub_args(ctx context.Context, r
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteHub_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateHub_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 model.NewHub
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNNewHub2githubᚗcomᚋraganmartinezᚑhfᚋgqlgenᚑkatanaᚋgraphqlᚋusᚋgraphᚋmodelᚐNewHub(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -547,6 +616,84 @@ func (ec *executionContext) _Mutation_createHub(ctx context.Context, field graph
 	res := resTmp.(*model.Hub)
 	fc.Result = res
 	return ec.marshalNHub2ᚖgithubᚗcomᚋraganmartinezᚑhfᚋgqlgenᚑkatanaᚋgraphqlᚋusᚋgraphᚋmodelᚐHub(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateHub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateHub_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateHub(rctx, args["id"].(int), args["input"].(model.NewHub))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Hub)
+	fc.Result = res
+	return ec.marshalOHub2ᚖgithubᚗcomᚋraganmartinezᚑhfᚋgqlgenᚑkatanaᚋgraphqlᚋusᚋgraphᚋmodelᚐHub(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteHub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteHub_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteHub(rctx, args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_hub(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1903,6 +2050,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "updateHub":
+			out.Values[i] = ec._Mutation_updateHub(ctx, field)
+		case "deleteHub":
+			out.Values[i] = ec._Mutation_deleteHub(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2590,6 +2741,13 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
+}
+
+func (ec *executionContext) marshalOHub2ᚖgithubᚗcomᚋraganmartinezᚑhfᚋgqlgenᚑkatanaᚋgraphqlᚋusᚋgraphᚋmodelᚐHub(ctx context.Context, sel ast.SelectionSet, v *model.Hub) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Hub(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

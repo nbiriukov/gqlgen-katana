@@ -24,4 +24,6 @@ input NewHub {
 
 type Mutation {
   createHub(input: NewHub!): Hub!
+  updateHub(id: Int!, input: NewHub!): Hub
+  deleteHub(id: Int!): Boolean
 }
