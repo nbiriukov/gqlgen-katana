@@ -33,9 +33,9 @@ func (r *mutationResolver) UpdateHub(ctx context.Context, id int, input model.Ne
 			hub.Name = input.Name
 			hub.Address = input.Address
 			hub.State = input.State
-		}
 
-		return hub, nil
+			return hub, nil
+		}
 	}
 
 	return nil, fmt.Errorf("not found")
