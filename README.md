@@ -154,6 +154,53 @@ query getSchema {
 }
 ```
 
+## JSON schema format
+
+General file structure
+
+```
+{
+  menu: []          [MenuItem] - List of menu items (could contain subitems)
+  ...*name*:        String - Model name for queries and mutations
+    ModelSchema     ModelSchema - Schema of the model
+}
+```
+
+MenuItem:
+
+```
+{
+  model: "dc"     String - Model name for queries and mutations. If empty, page for menu item will not be created
+  title: "DC"     String, required - Model title for displaying in menu
+  single: false   Boolean, false - True if model is singleton, and has no table view (like settings, configs, etc)
+  items: []       [MenuItem] - List of subitems
+}
+```
+
+ModelSchema:
+
+```
+{
+  id: "name"          String - Indetifier of the id field
+  fields: []         [FieldSchema]
+}
+```
+
+FieldSchema:
+
+```
+{
+  "name": "name"                  String, required - Field name, for data accessing
+  "type": "string"                String, required - Field type, for select proper component to display
+  "description": "Id"             String, required - Field title
+  "disabled": true                Boolean, false - If set, user can not edit this field
+  "required": true                Boolean, false - If set, field value should exists
+  "enum": []                      [Any] - List of possible values
+  "sortable": false               Boolean, true - If set, field could be sortable in table view
+  "cssClass": "font-weight-bold"  String - css class for decorating values in table view
+}
+```
+
 ## How to add new resources
 
 Coming soon...
